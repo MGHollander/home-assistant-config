@@ -1,0 +1,19 @@
+# A custom sensor to keep track of the version of an add-on.
+#
+# https://gist.github.com/MGHollander/a2a89ad96c6bf20afef8acee99e1ea1a
+#
+
+platform: rest
+resource: !secret rest_url_vscode
+name: Addon version VSCode
+value_template: "{{ value_json.data.state }}"
+scan_interval: 3600
+headers:
+  Authorization: !secret addon_update_token
+  Content-Type: application/json
+json_attributes_path: "$.data"
+json_attributes:
+  - version
+  - version_latest
+  - slug
+  - name

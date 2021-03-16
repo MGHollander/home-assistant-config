@@ -1,0 +1,91 @@
+blueprint:
+  name: Add-on update notifications
+  description: >
+    Send a notification to Home Assistant and/or a mobile device when there's an
+    update available for the selected add-on.
+
+
+    You need to add a sensor for the add-on to keep track of the version. An
+    example of a sensor can be found here:
+    https://gist.github.com/MGHollander/a2a89ad96c6bf20afef8acee99e1ea1a
+
+
+    This blueprint is forked from
+    https://community.home-assistant.io/t/notify-when-an-addon-update-becomes-available/263926
+  domain: automation
+  input:
+    addon_sensor:
+      name: Add-on sensor
+      description:
+        This sensor contains the version information of the sensor and
+        should include the attributes 'version', 'version latest', 'slug' and
+        'name'.
+      selector:
+        entity:
+          domain: sensor
+    notify_home_assistant_boolean:
+      name: Add a persistent notification to Home Assistant
+      description: Enable if you'd like to receive a persistent notification in Home Assistant.
+      default: false
+      selector:
+        boolean: {}
+    notify_device_boolean:
+      name: Send a notification to a device
+      description: Enable if you'd like to receive a notification on a device.
+      default: false
+      selector:
+        boolean: {}
+    notify_device:
+      name: Notify device
+      description: The device where the notification should be sent to.
+      default: ""
+      selector:
+        device:
+          integration: mobile_app
+variables:
+  sensor_input: !input "addon_sensor"
+  version: "{{ state_attr( sensor_input, 'version' ) }}"
+  version_latest: "{{ state_attr( sensor_input, 'version_latest' ) }}"
+  slug: "{{ state_attr( sensor_input, 'slug' ) }}"
+  addon_name: "{{ state_attr( sensor_input, 'name' ) }}"
+  send_home_assistant_notification: !input "notify_home_assistant_boolean"
+  send_device_notification: !input "notify_device_boolean"
+  notification_device: !input "notify_device"
+trigger:
+  platform: event
+  event_type: state_changed
+  event_data:
+    entity_id: !input "addon_sensor"
+condition:
+  condition: template
+  value_template: "{{ version != version_latest }}"
+action:
+  - choose:
+      - conditions:
+          - condition: template
+            value_template: "{{ notification_device and send_device_notification == true }}"
+        sequence:
+          - domain: mobile_app
+            type: notify
+            device_id: !input "notify_device"
+            message: You are currently running version {{ version }}
+            title: "{{ addon_name }} {{ version_latest }} is available."
+    default: []
+  - choose:
+      - conditions:
+          - condition: template
+            value_template: "{{ send_home_assistant_notification == true }}"
+        sequence:
+          - service: persistent_notification.create
+            data:
+              message: >-
+                **{{ addon_name }} {{ version_latest }} is available.**
+
+
+                You are currently running version {{ version }}
+
+
+                [Go to update](/hassio/addon/{{ slug }}/info)
+              title: "{{ addon_name }} update available"
+              notification_id: "{{ slug }}_update_notification"
+    default: []

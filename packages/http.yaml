@@ -1,0 +1,14 @@
+# The http component serves all files and data required for the
+# Home Assistant frontend.
+#
+# https://www.home-assistant.io/components/http/
+#
+
+http:
+  # Flag indicating whether additional IP filtering is enabled.
+  ip_ban_enabled: true
+
+  # Number of failed login attempt from single IP after which it will be
+  # automatically banned if ip_ban_enabled is true. When set to -1 no new
+  # automatic bans will be added.
+  login_attempts_threshold: 3

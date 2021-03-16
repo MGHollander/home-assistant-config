@@ -1,0 +1,14 @@
+# Customize entities
+#
+# https://www.home-assistant.io/docs/configuration/customizing-devices/
+#
+
+# Examples
+
+# thermostat.family_room:
+#   entity_picture: https://example.com/images/nest.jpg
+#   friendly_name: Nest
+
+# switch.wemo_switch_1:
+#   friendly_name: Toaster
+#   entity_picture: /local/toaster.jpg

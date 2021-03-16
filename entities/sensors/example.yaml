@@ -1,0 +1,14 @@
+# An example for a custom sensor
+#
+# https://www.home-assistant.io/docs/configuration/devices/
+# https://www.home-assistant.io/integrations/sensor/
+#
+
+# platform: template
+# sensors:
+#   mystrom_button:
+#     device_class: battery
+#     friendly_name: myStrom button batterijniveau
+#     value_template: "0"
+#     icon_template: "mdi:battery"
+#     unit_of_measurement: "%"

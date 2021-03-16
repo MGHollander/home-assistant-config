@@ -1,0 +1,14 @@
+# Ignore Folders
+.storage
+.cloud
+deps
+image
+tts
+
+# Ignore Extensions
+*.db
+*.HA_VERSION
+*.log
+
+# Ignore files with sensitive data
+secrets.yaml

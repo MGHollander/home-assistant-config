@@ -1,0 +1,78 @@
+# Automations
+#
+# https://www.home-assistant.io/docs/automation/
+#
+
+- id: '1613725090951'
+  alias: Living room lights TOGGLE
+  description: ''
+  trigger:
+  - platform: webhook
+    webhook_id: living_room_lights_toggle
+  condition: []
+  action:
+  - service: switch.toggle
+    data: {}
+    entity_id: group.living_room_lights
+  mode: queued
+  max: 10
+- id: '1615743930343'
+  alias: Add-on update notifications DuckDNS
+  description: ''
+  use_blueprint:
+    path: mghollander/addon_update_notification.yaml
+    input:
+      addon_sensor: sensor.addon_version_duckdns
+      notify_home_assistant_boolean: true
+      notify_device_boolean: true
+      notify_device: 0e1bffa52a870d259fc68234e2442f8d
+- id: '1615754301429'
+  alias: 'Add-on update notifications File editor '
+  description: ''
+  use_blueprint:
+    path: mghollander/addon_update_notification.yaml
+    input:
+      addon_sensor: sensor.addon_version_file_editor
+      notify_home_assistant_boolean: true
+      notify_device_boolean: true
+      notify_device: 0e1bffa52a870d259fc68234e2442f8d
+- id: '1615754324902'
+  alias: 'Add-on update notifications VScode '
+  description: ''
+  use_blueprint:
+    path: mghollander/addon_update_notification.yaml
+    input:
+      addon_sensor: sensor.addon_version_vscode
+      notify_home_assistant_boolean: true
+      notify_device_boolean: true
+      notify_device: 0e1bffa52a870d259fc68234e2442f8d
+- id: '1615757042563'
+  alias: Add-on update notifications NGINX proxy
+  description: ''
+  use_blueprint:
+    path: mghollander/addon_update_notification.yaml
+    input:
+      addon_sensor: sensor.addon_version_nginx_ssl_proxy
+      notify_home_assistant_boolean: true
+      notify_device_boolean: true
+      notify_device: 0e1bffa52a870d259fc68234e2442f8d
+- id: '1615757290158'
+  alias: Add-on update notifications Samba share
+  description: ''
+  use_blueprint:
+    path: mghollander/addon_update_notification.yaml
+    input:
+      addon_sensor: sensor.addon_version_samba_share
+      notify_home_assistant_boolean: true
+      notify_device_boolean: true
+      notify_device: 0e1bffa52a870d259fc68234e2442f8d
+- id: '1615757311133'
+  alias: Add-on update notifications Terminal & SSH
+  description: ''
+  use_blueprint:
+    path: mghollander/addon_update_notification.yaml
+    input:
+      addon_sensor: sensor.addon_version_terminal_ssh
+      notify_home_assistant_boolean: true
+      notify_device_boolean: true
+      notify_device: 0e1bffa52a870d259fc68234e2442f8d

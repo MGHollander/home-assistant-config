@@ -1,0 +1,11 @@
+# Entity groups
+#
+# https://www.home-assistant.io/integrations/group/
+#
+
+living_room_lights:
+  name: Living room lights
+  entities:
+    - switch.50566078ecfabc26a16b
+    - switch.50566078bcddc23ab0f5
+    - switch.50566078ecfabc273a58

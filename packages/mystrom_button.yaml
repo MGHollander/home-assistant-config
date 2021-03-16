@@ -1,0 +1,86 @@
+# myStrom button package
+#
+# https://www.home-assistant.io/docs/configuration/packages/
+#
+
+# A custom sensor to keep track of the myStrom button battery level
+sensor:
+  - platform: template
+    sensors:
+      mystrom_button_battery_level:
+        device_class: "battery"
+        friendly_name: "myStrom button batterijniveau"
+        value_template: "{{ states('input_number.mystrom_button_battery_level') | round }}"
+
+# Field to restore the last known mystrom_button_battery_level after a reboot
+input_number:
+  mystrom_button_battery_level:
+    name: myStrom button battery level
+    min: 0
+    max: 100
+    step: 1
+    mode: box
+
+# REST API call to update the myStrom button battery level
+rest_command:
+  update_mystrom_button_battery_level_sensor:
+    url: http://192.168.2.45:8123/api/states/sensor.mystrom_button_battery_level
+    method: POST
+    headers:
+      authorization: !secret addon_update_token
+      content-type: "application/json"
+    payload: >
+      {
+        "state": "{{ battery_level | round }}",
+        "attributes": {
+          "device_class": "{{ state_attr('sensor.mystrom_button_battery_level', 'device_class') }}",
+          "friendly_name": "{{ state_attr('sensor.mystrom_button_battery_level', 'friendly_name') }}"
+        }
+      }
+
+automation:
+  - alias: myStrom button - battery level webhook
+    description: 'The myStrom button sends a generic event after every push. This webhook listens for this event to
+      update the battery level in Home Assistant. Button API documentation:
+      https://api.mystrom.ch/#36d78676-5ba4-45dc-9eac-f3cb6b4b57fa.'
+    trigger:
+    - platform: webhook
+      webhook_id: update_mystrom_button_battery_level
+    condition: []
+    action:
+    - service: rest_command.update_mystrom_button_battery_level_sensor
+      data:
+        battery_level: '{{ trigger.data.battery | round }}'
+    - service: input_number.set_value
+      target:
+        entity_id: input_number.mystrom_button_battery_level
+      data:
+        value: "{{ trigger.data.battery }}"
+    mode: queued
+    max: 5
+  - alias: myStrom button - low battery notification
+    description: 'Send notifications if the myStrom battery level is low.'
+    trigger:
+    - platform: event
+      event_type: state_changed
+      event_data:
+        entity_id: sensor.mystrom_button_battery_level
+    condition:
+    - condition: template
+      value_template: '{{ states(''sensor.mystrom_button_battery_level'') | round <
+        11 }}'
+    action:
+    - service: persistent_notification.create
+      data:
+        notification_id: mystrom_button_battery_level_low
+        title: Low battery level
+        message: >
+          The myStrom button battery level is **{{ states(sensor.mystrom_button_battery_level) | round }}%**.
+          It should be charged soon.
+    - service: notify.mobile_app_oneplus_5_marc
+      data:
+        title: Low battery level
+        message: >
+          The myStrom button battery level is {{ states('sensor.mystrom_button_battery_level') | round }}%.
+          It should be charged soon.
+    mode: single

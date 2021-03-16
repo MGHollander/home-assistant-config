@@ -1,0 +1,7 @@
+# Customize entities matching a pattern
+#
+# https://www.home-assistant.io/docs/configuration/customizing-devices/
+#
+
+"sensor.addon_version_*":
+  icon: mdi:arrow-up-bold-circle
