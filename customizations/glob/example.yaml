@@ -1,0 +1,12 @@
+# Customize entities matching a pattern
+#
+# https://www.home-assistant.io/docs/configuration/customizing-devices/
+#
+
+# Examples
+
+# "light.kitchen_*":
+#   icon: mdi:description
+
+# "scene.month_*_colors":
+#   icon: mdi:other
