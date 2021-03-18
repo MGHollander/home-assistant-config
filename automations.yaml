@@ -1,8 +1,3 @@
-# Automations
-#
-# https://www.home-assistant.io/docs/automation/
-#
-
 - id: '1613725090951'
   alias: Living room lights TOGGLE
   description: ''
@@ -73,6 +68,16 @@
     path: mghollander/addon_update_notification.yaml
     input:
       addon_sensor: sensor.addon_version_terminal_ssh
+      notify_home_assistant_boolean: true
+      notify_device_boolean: true
+      notify_device: 0e1bffa52a870d259fc68234e2442f8d
+- id: '1615966895056'
+  alias: Add-on update notifications SQLite Web
+  description: ''
+  use_blueprint:
+    path: mghollander/addon_update_notification.yaml
+    input:
+      addon_sensor: sensor.addon_version_sqlite_web
       notify_home_assistant_boolean: true
       notify_device_boolean: true
       notify_device: 0e1bffa52a870d259fc68234e2442f8d
