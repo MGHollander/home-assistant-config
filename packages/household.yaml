@@ -1,0 +1,68 @@
+# Keep track of household tasks
+#
+# Inspired by: https://student-techlife.com/2019/07/09/what-task-do-we-do-today/
+#
+
+homeassistant:
+  customize:
+    input_datetime.change_bed_sheets:
+      icon: 'mdi:bed-queen'
+    input_datetime.vacuuming:
+      icon: 'mdi:robot-vacuum'
+
+input_datetime:
+  change_bed_sheets:
+    name: Change bed sheets
+    has_date: true
+  vacuuming:
+    name: Vacuuming
+    has_date: true
+
+sensor:
+  - platform: template
+    sensors:
+      days_after_changing_bed_sheets:
+        friendly_name: Days after changing the bed sheets
+        unit_of_measurement: 'days'
+        value_template: >
+          {% if ((as_timestamp(now()) - state_attr('input_datetime.change_bed_sheets', 'timestamp')) | int / 86400) | round(0, 'floor') == 0 %}
+            today
+          {% elif ((as_timestamp(now()) - state_attr('input_datetime.change_bed_sheets', 'timestamp')) | int / 86400) | round(0, 'floor') == 1 %}
+            yesterday
+          {% else %}
+            {{ ((as_timestamp(now()) - state_attr('input_datetime.change_bed_sheets', 'timestamp')) | int / 86400) | round(0, 'floor') }} days ago
+          {% endif %}
+  - platform: template
+    sensors:
+      days_after_vacuuming:
+        friendly_name: Days after vacuuming
+        unit_of_measurement: 'days'
+        value_template: >
+          {% if ((as_timestamp(now()) - state_attr('input_datetime.vacuuming', 'timestamp')) | int / 86400) | round(0, 'floor') == 0 %}
+            today
+          {% elif ((as_timestamp(now()) - state_attr('input_datetime.vacuuming', 'timestamp')) | int / 86400) | round(0, 'floor') == 1 %}
+            yesterday
+          {% else %}
+            {{ ((as_timestamp(now()) - state_attr('input_datetime.vacuuming', 'timestamp')) | int / 86400) | round(0, 'floor') }} days ago
+          {% endif %}
+
+# input_select:
+#   household_task:
+#     name: Select Household Task
+#     options:
+#       - Change bed sheets
+#       - Vacuuming
+
+# script:
+#   set_date_household_task:
+#     alias: 'Set date to today'
+#     sequence:
+#       - service: input_datetime.set_datetime
+#         data_template:
+#           entity_id: >
+#             {% if is_state ("input_select.household_task", "Change bed sheets") %}
+#               input_datetime.change_bed_sheets
+#             {% elif is_state ("input_select.household_task", "Vacuuming") %}
+#               input_datetime.vacuuming
+#             {% endif %}
+#           date: '{{ now().strftime("%Y-%m-%d") }}'
