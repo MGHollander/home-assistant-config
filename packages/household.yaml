@@ -45,24 +45,3 @@ sensor:
           {% else %}
             {{ ((as_timestamp(now()) - state_attr('input_datetime.vacuuming', 'timestamp')) | int / 86400) | round(0, 'floor') }} days ago
           {% endif %}
-
-# input_select:
-#   household_task:
-#     name: Select Household Task
-#     options:
-#       - Change bed sheets
-#       - Vacuuming
-
-# script:
-#   set_date_household_task:
-#     alias: 'Set date to today'
-#     sequence:
-#       - service: input_datetime.set_datetime
-#         data_template:
-#           entity_id: >
-#             {% if is_state ("input_select.household_task", "Change bed sheets") %}
-#               input_datetime.change_bed_sheets
-#             {% elif is_state ("input_select.household_task", "Vacuuming") %}
-#               input_datetime.vacuuming
-#             {% endif %}
-#           date: '{{ now().strftime("%Y-%m-%d") }}'
